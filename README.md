@@ -5,3 +5,6 @@ download and insert in to visual studios watch Tut on my youtube: https://www.yo
 --------------------------------------------------------------------------------------------
 
 In releases--------------------------------------------------->:https://github.com/Naruto25863/Geolocater/releases/tag/Geolocater
+
+
+and here is video proof this is not a virus!!!--------------->https://github.com/Naruto25863/Geolocater/blob/main/8w1920.gif

@@ -1,21 +1,16 @@
-Use it wisley 
+Use it wisley COPY UNTIL LINE NUMBER 110
 Instuctions➡️➡️➡️:https://www.youtube.com/channel/UC1WogEsFOEr6ytEAa2vb1BA
 
 
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Runtime;
 
-namespace geolocate
+namespace Geolocate
 {
-
     public class Data
     {
         public string City { get; set; }
@@ -26,41 +21,89 @@ namespace geolocate
         public string Postal { get; set; }
         public string Timezone { get; set; }
     }
+
     internal class Program
     {
         static async Task Main(string[] args)
         {
-            Console.Title = "Geolocator";
-            Console.Write("Enter IP Address: ");
-            string ip = Console.ReadLine();
-            string url = $"https://ipinfo.io/{ip}/json";
+            Console.Title = "Geolocator 3.0"; // Upgraded version for elite hackers
+            Console.ForegroundColor = ConsoleColor.Green; // Matrix-style green text
+
+            try
+            {
+                Console.WriteLine("Welcome to Geolocator!");
+                Console.Write("Enter an IP Address: ");
+                string ip = Console.ReadLine();
+
+                var ipInfo = await GetIpInfoAsync(ip);
+                DisplayIpInfo(ipInfo);
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        static async Task<Data> GetIpInfoAsync(string ipAddress)
+        {
+            string url = $"https://ipinfo.io/{ipAddress}/json";
             using (HttpClient client = new HttpClient())
             {
-                try
-                {
-                    HttpResponseMessage  httpResponseMessage = await client.GetAsync(url);
-                    httpResponseMessage.EnsureSuccessStatusCode();
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string responseData = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Data>(responseData);
+            }
+        }
 
-                    Console.WriteLine("[+]Request Successfully Made");
+        static void DisplayIpInfo(Data ipInfo)
+        {
+            Console.Clear();
+            Console.WriteLine("Geolocation Results:");
+            Console.WriteLine($"Country: {ipInfo.Country}");
+            Console.WriteLine($"City: {ipInfo.City}");
+            Console.WriteLine($"Coordinates: {ipInfo.Loc}");
+            Console.WriteLine($"Postal Code: {ipInfo.Postal}");
+            Console.WriteLine($"Region: {ipInfo.Region}");
+            Console.WriteLine($"ASN: {ipInfo.Org}");
+            string[] coord = ipInfo.Loc.Split(',');
+            Console.WriteLine($"Google Maps: https://www.google.com/maps/?q={coord[0]},{coord[1]}");
 
-                    string responseData = await httpResponseMessage.Content.ReadAsStringAsync();
-                    Data ipinfo = JsonConvert.DeserializeObject<Data>(responseData);
+            // ASCII art inspired by the image:
+            Console.WriteLine(@"
 
-                    Console.Clear();
-                    Console.WriteLine($"Country: {ipinfo.Country}");
-                    Console.WriteLine($"City: {ipinfo.City}");
-                    Console.WriteLine($"Coordinates: {ipinfo.Loc}");
-                    Console.WriteLine($"Postal Code: {ipinfo.Postal}");
-                    Console.WriteLine($"Region: {ipinfo.Region}");
-                    Console.WriteLine($"ASN: {ipinfo.Org}");
-                    string[] Coord =ipinfo.Loc.Split(',');
-                    Console.WriteLine($"Google Maps:https://www.google.com/maps/?q={Coord[0]},{Coord[1]}");
-                }   
-                catch (HttpRequestException ex)
-                { 
-                    Console.WriteLine($"Error: {ex. Message}");
-                }           
-            }   
+
+
+
+
+                  _________-----_____
+       _____------           __      ----_
+___----             ___------              \
+   ----________        ----                 \
+               -----__    |             _____)
+                    __-                /     \
+        _______-----    ___--          \    /)\
+  ------_______      ---____            \__/  /
+               -----__    \ --    _          /\
+                      --__--__     \_____/   \_/\
+                              ----|   /          |
+                                  |  |___________|
+                                  |  | ((_(_)| )_)
+                                  |  \_((_(_)|/(_)
+                                  \             (
+                                   \_____________)
+              
+                                            DEATH
+
+
+              
+
+
+
+
+
+                      
+");
         }
     }
 }
